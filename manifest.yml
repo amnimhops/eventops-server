@@ -1,0 +1,6 @@
+---
+applications:
+ - name: eventops
+   host: eventops
+   random-route: false
+   memory: 1024M

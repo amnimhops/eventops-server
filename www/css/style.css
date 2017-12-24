@@ -1,0 +1,204 @@
+
+#menu{
+    margin-bottom:0px;
+}
+body{
+    background:url(../images/home_background2.jpeg) no-repeat center center fixed;
+    background-size: cover;
+}
+.view-container{
+}
+#motivational_big{
+    border:0px none;
+    border-radius:25px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    text-align: center;
+    float:right;
+    margin-top:150px; 
+    margin-right:-15px;   
+    background-color:rgba(50,50,50,.5);
+}
+
+#motivational_big h1{
+    font-size:4em;
+    margin:25px;
+    color:white;
+}
+
+#motivational_big i{
+    vertical-align:middle;
+    color:#00bc8c; 
+}
+#motivational{
+    border:0px none;
+    border-radius:25px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    text-align: left;
+    display:inline-block;
+    margin-top:30px;
+    margin-left:-15px;
+    padding:5px;
+    
+    background-color:rgba(50,50,50,.5);
+}
+#motivational h1{
+    font-size:2em;
+    color:white;
+    margin-left:100px;
+    margin-right:100px;
+}
+#motivational i{
+    vertical-align:middle;
+    color:#00bc8c; 
+}
+#motivational_dock{
+    border:0px none;
+    text-align: center;
+    display:block;
+    margin-top:0px;
+    padding:5px;
+    
+    background-color:rgba(50,50,50,.5);
+}
+#motivational_dock h1{
+    font-size:2em;
+    color:white;
+}
+#motivational_dock i{
+    vertical-align:middle;
+    color:#00bc8c; 
+}
+.loginform ,.registerform{
+    background-color:rgba(50,50,50,.5);
+    padding:25px;
+    margin-top:10%;
+}
+
+.city-autocomplete{
+    background-color:white;
+}
+.city-autocomplete a{
+    margin:5px;
+}
+/* Darkly doesn't show in the right way
+the menu on small screens. This patches the
+problem*/
+.navbar-toggle span{
+    background-color:white;
+}
+/* We can't use href due to angular-ui routes, so change the cursor to a pointer */
+.tabcontrol ul.nav-tabs > li >  a{
+    cursor:pointer;
+}
+.tabcontrol .badge{
+    background-color:#00bc8c;
+}
+.tab-sheet{
+    background-color:#222222;
+    border-left: 1px solid #464545;
+    border-bottom: 1px solid #464545;
+    border-right: 1px solid #464545;
+    padding:15px;
+}
+.tab-sheet > div{
+    margin:15px;
+}
+.event-list-item{
+    padding:5px;
+    border-bottom:1px solid #464545;
+}
+.event-list-item:hover{
+    background-color:#464545;
+}
+.event-list-item p{
+    margin-left:30px;
+}
+.ruler{
+    border-bottom:1px solid #464545;
+}
+#event-search-map{
+    width:100%;   
+    background-color:blue;
+}
+#event-map-opts{
+    width:100%;
+    /*position:fixed;*/
+    /*background-color:rgba(50,50,50,.5);*/
+}
+.event-map-visible{
+    /*width:250px;*/
+    /*background-color:red !important;*/
+}
+#event-map-opts i{
+    cursor:pointer;
+}
+#event-map-opts i:hover{
+    color:#00bc8c;
+}
+.info-window{
+    color:black;
+}
+.event-details{
+    background-color:rgba(50,50,50,.95);   
+    margin:15px;
+}
+.event-details-map{
+    
+}
+
+.aboutus{
+    padding-top:15px;
+    border-top-left-radius: 10px;
+    background-color:rgba(50,50,50,.95);
+    margin-left:10px;
+    margin-top:30px;
+}
+.aboutus div{
+    text-align: justify;
+}
+.alert-ko {
+    background-color:black;
+    border-color: black;
+    color: #ffffff;
+}
+.alert-warning hr {
+    border-top-color: black;
+}
+.alert-warning .alert-link {
+    color: #e6e6e6;
+}
+ 
+#event_image{
+	background-repeat: no-repeat;
+	background-size:100;
+	background-position: center center;
+	margin-left:-15px;
+	margin-right:-15px;
+	
+	padding-top:15px;
+}
+#event_view{
+
+	
+	margin-top:20px;
+}
+#event_view .img_header{
+	
+}
+#event_view .row{
+	background-color:rgba(50,50,50,.8);
+    color:white;
+	
+	margin-top:0px;
+}
+#event_view .ruler{
+	margin-top:10px;
+	margin-bottom:15px;
+	background-color:rgba(20,20,20,1);
+	min-height:5px;
+}
+#event_view h2{
+	padding:5px;
+	background-color:rgba(40,40,40,1);

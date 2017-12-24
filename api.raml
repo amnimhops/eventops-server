@@ -1,0 +1,372 @@
+#%RAML 1.0
+---
+title: eventops API
+baseUri: http://localhost/{version}
+version: v1
+securitySchemes:
+    basic:
+        type: Basic Authentication
+    session:
+        type: x-session
+
+types:
+    Category:
+        properties:
+            name: string
+            image: string
+    LoginData:
+        properties:
+            email: string       #user email
+            password: string    #account password
+    Request:
+        properties:
+            id: number          #Request identifier
+            event: number       #Event identifier
+            user: string        #User email
+            title: string       #Event name
+            location: Geo       #Event location
+            accepted: boolean   #Request accepted by the user
+    Geo: number[]               #Longitude,Latitude
+    City:
+        properties:
+            id: number
+            name: string
+            country: string
+            location: Geo
+    User:
+        properties:
+            email: string # also entity PK
+            name: string
+            password: 
+                required: false
+                type: string
+            city: string
+            location: Geo
+    Event:
+        properties:
+            id: number
+            owner: User
+            address:
+                type: string
+                required: false
+            location: Geo
+            distance: number        # distance from the event to the user's current position (the last known)
+            category: Category
+            name: string
+            public: boolean
+            start: datetime-only
+            end: 
+                type: datetime-only
+                required: false
+            description: string
+    Suggestion:
+        properties:
+            event: Event
+            from: User
+            to: 
+                required: false
+                type: User
+            when:
+                required: false
+                type: datetime-only
+    PreloadData:
+        properties:
+            user: User
+            events: Event[]
+            requests: string
+            responses: string
+            suggestions: Suggestion[]
+traits:
+    halfsecured:
+        securedBy: [null,basic]
+        responses:
+            401:
+                description: Forbidden to the current user
+                body:
+                    text/plain:
+                        type: string
+    secured:
+        securedBy: [basic]
+        responses:
+            401:
+                description: Forbidden to the current user
+                body:
+                    text/plain:
+                        type: string
+    fallible:
+        responses:
+            500:
+                description: Server error
+                body:
+                    text/plain:
+                        type: string
+            400:
+                description: Bad request
+    emptyok:
+        responses:
+            200:
+                description: Generic OK without specific data
+                body:
+                    text/plain:
+                        type: string
+/restartdb:
+    get:
+        is: [fallible,emptyok]
+/users:
+    post:
+        is: [fallible]
+        description: Adds new user
+        body:
+            application/json:
+                properties:
+                    email: string # also entity PK
+                    name: string
+                    password: string
+                    city: string
+                    location: Geo
+        responses:
+            200:
+                description: User data
+                body:
+                    application/json:
+                        type: User
+    /initialData:
+        get:
+            is: [fallible]
+            securedBy: [basic]
+            description: Preload data       
+            responses:
+                200:
+                    description: Preload data for the application is returned
+                    body:
+                        application/json:
+                            type: PreloadData
+
+                401:
+                    description: Login error
+                    body:
+                        text/plain:
+                            type: string
+    /{id}:
+        get:
+            is: [secured,fallible]
+            description: Retrieves the user info
+            responses:
+                200:
+                    description: User information
+                    body:
+                        application/json:
+                            type: User
+        put:
+            is: [secured,fallible]
+            description: Updates the user data
+            body:
+                application/json:
+                    type: User
+        delete:
+            is: [secured,fallible,emptyok]
+            description: Removes the user from the system
+/suggestions:
+    get:
+        is: [secured,fallible]
+        description: Returns user suggestion list
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: Suggestion[]
+    post:
+        is: [secured,fallible,emptyok]
+        description: Creates a new suggestion
+        body:
+            application/json:
+                properties:
+                    eventId: string
+                    email: string
+    /{id}:
+        delete:
+            is: [secured,fallible,emptyok]
+            description: Deletes a (own) suggestion
+/events:
+    get:
+        is: [halfsecured,fallible]
+        description: Get a list of events
+        queryParameters:
+            search:
+                required: true
+                type: string
+                description: TYpe of search (filter,own)
+            start:
+                required: false
+                type: datetime-only
+                description: Timestamp of the start date
+            end:
+                required: false
+                type: datetime-only
+                description: timestamp of the end date
+            category:
+                required: false
+                type: string
+                description: id of the related category
+            lat:
+                required: false
+                type: number
+                description: latitude for the center point of search
+            lng:
+                required: false
+                type: number
+                description: longitude for the center point of search
+            distance:
+                required: false
+                type: number
+                description: the radius of search from the center of latlng, in meters. Unused if lat and lng are not supplied
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: Event[]
+    post:
+        is: [secured,fallible]
+        description: Add new event
+        body:
+            application/json:
+                properties:
+                    location:
+                        type: Geo
+                        required: true
+                    name: string
+                    description: string
+                    public: boolean
+                    start: datetime-only
+                    address: string
+                    end: 
+                        type: datetime-only
+                        required: false
+                    category: string
+        responses:
+            200:
+                body:
+                    application/json:
+                        type: Event
+    /{id}:
+        get:
+            is: [halfsecured,fallible]
+            description: Full event info
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: Event
+                401:
+                    body:
+                        text/plain:
+                            type: string
+                            description: Curren user doesn't have access to requested event
+        put:
+            is: [secured,fallible]
+            description: Updates event info
+            body:
+                application/json:
+                    properties:
+                        location:
+                            type: Geo
+                            required: true
+                        name: string
+                        description: string
+                        public: boolean
+                        start: datetime-only
+                        address: string
+                        end: 
+                            type: datetime-only
+                            required: false
+                        category: string
+            responses:
+                200:
+                    body:
+                        application/json:
+                            type: Event
+        delete:
+            is: [secured,fallible,emptyok]
+            description: Removes an event
+/requests:
+    get:
+        is: [secured,fallible]
+        description: Return all pending and confirmed requests
+        responses:
+            200:
+                description: Request list
+                body:
+                    application/json:
+                        properties:
+                            sent:
+                                type: Request[]
+                            received:
+                                type: Request[]
+    post:
+        is: [secured,fallible,emptyok]
+        description: Creates a request for each supplied user
+        body:
+            application/json:
+                properties:
+                    eventId:
+                        type: string
+                        required: true
+                    emails:
+                        type: string[]
+                        required: true
+    /{id}:
+        put:
+            is: [secured,fallible]
+            description: Invoked by the invited user updates the "accepted" field.
+            body:
+                application/json:
+                    properties:
+                        accepted:
+                            type: boolean
+                            required: true
+            responses:
+                200:
+                    description: Returns the updated request
+                    body:
+                        application/json:
+                            type: Request
+        delete:
+            is: [secured,fallible,emptyok]
+            description: Invoked by the owner of the event. This removes an invitation
+/cities:
+    get:
+        is: [fallible]
+        description: Returns a list of cities that matches the query string
+        queryParameters:
+            q:
+                type: string
+                required: false
+        responses:
+            200:
+                description: List of cities matched
+                body:
+                    application/json:
+                        type: City[]
+/categories:
+    get:
+        is: [fallible]
+        description: Returns a list of available categories
+        responses:
+            200:
+                description: List of all categories found
+                body:
+                    application/json:
+                        type: Category[]
+/share:
+    post:
+        is: [fallible,secured]
+        description: Sends an email to a list of recipients
+        body:
+            application/json:
+                properties:
+                    eventId:
+                        type: string
+                        required: true
+                    emails:
+                        type: string[]
+                        required: true

@@ -1,0 +1,28 @@
+{
+  "name": "eventops-api",
+  "version": "1.0.0",
+  "description": "evenTops server API",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mongoose": "^4.13.6",
+    "nodemailer": "^4.4.1",
+    "osprey": "^0.4.1",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amnimhops/eventops.git"
+  },
+  "author": "amnimhops",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amnimhops/eventops/issues"
+  },
+  "homepage": "https://github.com/amnimhops/eventops#readme"
+}

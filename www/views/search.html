@@ -1,0 +1,47 @@
+<div class="container-fluid view-container">
+    <div class="row">
+        <div class="col-xs-12" id="motivational_dock">
+            <h1><i class="fa fa-search fa-2x"></i> Find something cool</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-2" style="background-color:rgba(50,50,50,.75)">
+            <div id="event-map-opts" xng-class="{'event-map-visible':searchOptions.visible}">
+                <div>
+                    <div class="form-group">
+                        <label for="sstart">Start</label>
+                        <div class='input-group date' id='searchstart'>
+                            <input id="sstart" type='text' class="form-control" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="send">End</label>
+                        <div class='input-group date' id='searchend'>
+                            <input id="send" type='text' class="form-control" />
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
+                    </div>
+                        
+                    <div class="form-group">
+                        <!--<input type="range" min="50" max="5000" />-->
+                        <label for="latitude">Position</label>
+                        <input type="text" id="position" class="form-control input-xs" value="fubar"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="distance">Distance ({{searchOptions.distance}} meters)</label>  
+                        <input type="range" min="50" max="5000" ng-model="searchOptions.distance"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-10" style="padding:0px;">
+            <div  id="event-search-map"><p>a</p></div>
+        </div>
+    </div>
+    <script>
+        $('#event-search-map').height($(window).height() - $('#_header').height() - $('#motivational_dock').height()-25);
+        $('#event-map-opts').height($('#event-search-map').height())
+    </script>
+</div>
+

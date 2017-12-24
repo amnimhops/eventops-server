@@ -1,0 +1,244 @@
+<div class="container-fluid view-container" ng-show="stateFactory.user!=null">
+    <div id="motivational">
+        <h1><i class="fa fa-user-plus fa-2x"></i> Welcome back, {{stateFactory.user.name}}</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-2 visible-lg"></div>
+        <div class="col-lg-8 col-xs-12">
+
+            <div class="row tabcontrol">
+                <ul class="nav nav-tabs" style="margin-top:25px;">
+                    <li role="presentation" class="active"><a data-target="#profile" data-toggle="tab">Profile</a></li>
+                    <li role="presentation"><a data-target="#events" data-toggle="tab">Events <span class="badge">{{stateFactory.userEvents.length}}</span></a></li>
+                    <li role="presentation"><a data-target="#requests" data-toggle="tab">Requests  <span class="badge">{{stateFactory.receivedRequests.length}}</span></a></li>
+                    <li ng-show="eventEditModel!=null" role="presentation">
+                        <a data-target="#eventform" data-toggle="tab">
+                            <span ng-click="closeEditEvent()"><i style="color:red;" class="fa fa-window-close"></i></span>
+                            Event details  
+                            <span class="badge" style="background-color:{{eventEditModel.badge.color}}">{{eventEditModel.badge.label}}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active tab-sheet" id="profile">
+                        <form>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12" class="control-label" for="username">Name</label>
+                                    <div class="col-xs-12">
+                                        <input type="text" name="username" ng-model="stateFactory.user.name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12" class="control-label" for="email">Email</label>
+                                    <div class="col-xs-12">
+                                        <input type="email" name="email" ng-model="stateFactory.user.email" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12" class="control-label" for="city">City</label>
+                                    <div class="col-xs-12">
+                                        <input type="text" name="city" ng-model="stateFactory.user.city" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4 col-md-offset-8">
+                                        <input type="button" value="Update" class="btn btn-block btn-primary" ng-click="updateProfile();" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade tab-sheet" id="events">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h3>Do you want some guests? Tell everybody you have an event</h3>
+                            </div>
+                            <div class="col-xs-12 col-md-4 col-md-offset-4"><a class="btn btn-block btn-primary" ng-click="editEvent(null);">Create new event</a></div>
+                        </div>
+                        <div class="row ruler"></div>
+                        <div class="row" ng-repeat="event in stateFactory.userEvents">
+                            <div class="col-xs-12 event-list-item">
+                                <div class="col-xs-12">
+                                    <h2><i class="fa fa-map-marker"></i>&nbsp;{{event.name}}</h2>
+                                    <p><i class="fa fa-calendar"></i>&nbsp;Begins <span>{{formatISODate(event.start)}}</span></p>
+                                    <p ng-show="event.end!==undefined"><i class="fa fa-calendar"></i>&nbsp;Ends <span>{{formatISODate(event.end)}}</span></p>
+                                    <p ng-show="event.address!==undefined"><i class="fa fa-road"></i>&nbsp;At <span>{{event.address}}</span></p>
+                                </div>
+                                <h4 class="col-xs-12">Assistances</h4>
+                                <div class="col-xs-4" ng-repeat="request in stateFactory.sentRequests[event._id]">
+                                    <div class="alert" ng-class="{'alert-ko':!request.accepted,'alert-info':request.accepted}">
+                                        <i class="fa" ng-class="{'fa-times':!request.accepted,'fa-check':request.accepted}"></i>
+                                        {{request.user.name}} ({{request.user.email}})
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="text-right">
+                                        <button class="btn btn-warning" alt="edit" ng-click="editEvent(event)"><i class="fa fa-pencil"></i> Edit</button>
+                                        <button class="btn btn-danger" alt="delete" ng-click="deleteEvent(event)"><i class="fa fa-trash"></i> Delete</button>
+                                    </div>
+                                </div>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade tab-sheet" id="requests">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h3>Send request to a friend</h3>
+                            </div>
+                            <div class="col-lg-12 visible-lg">
+                                <p>Select an event from the list below and sent to your friends email. If they are registered
+                                    your notification will appear in their dashboards.</p>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <select class="form-control" ng-options="e as e.name for e  in stateFactory.userEvents" ng-model="requestModel.event"></select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-4">
+                                <div class="form-group">
+                                    <input type="text" name="friendemail" class="form-control" placeholder="type user email" ng-model="requestModel.email" />
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-2">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-block btn-success" ng-click="sendRequest()">Send!</button>
+                                </div>
+                            </div>
+                            <div class="col-xs-12" ng-show="requestModel.status.message!=null">
+                                <p class="alert" ng-class="{'alert-success':requestModel.status.success,'alert-danger':!requestModel.status.success}">{{requestModel.status.message}}</p>
+                            </div>
+                        </div>
+                        <div class="row ruler"></div>
+                        <div class="row">
+                            <h3>Pending requests</h3>
+                        </div>
+                        <div class="row ruler"></div>
+                        <div class="row" ng-repeat="request in stateFactory.receivedRequests">
+                            <div class="col-xs-12 event-list-item">
+                                <div class="row">
+                                    <div class="col-xs-12 col-lg-8">
+                                        <div class="col-xs-12">
+                                            <span><strong><i class="fa fa-map-marker"></i>&nbsp;{{request.event.name}}</strong></span>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <span><strong><i class="fa fa-user"></i>&nbsp;{{request.sender.email}}</strong></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-lg-4">
+                                        <div class="btn-group text-right">
+                                            <button class="btn" ng-class="{'btn-default':!request.accepted,'btn-success':request.accepted}" ng-model="request.accepted"
+                                                ng-click="acceptRequest(request);">Confirm!</button>
+                                            <button class="btn" ng-class="{'btn-default':request.accepted,'btn-danger':!request.accepted}" ng-model="request.accepted"
+                                                ng-click="rejectRequest(request);">Nope!</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="eventEditModel!=null" class="tab-pane fade tab-sheet" id="eventform">
+                        <form>
+                            <input type="hidden" ng-model="eventEditModel.event._id" />
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="eventname" class="col-xs-12">Event title</label>
+                                    <div class="col-sm-12">
+                                        <input id="eventname" type="text" name="eventname" ng-model="eventEditModel.event.name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+							<div class="form-group">
+								<label for="category">Category</label>
+								<select class="form-control" ng-options="category as category.name for category in stateFactory.categories" ng-model="eventEditModel.event.category"></select>
+							</div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="eventend" class="col-xs-12 col-md-1">Start</label>
+                                    <div class="col-xs-12 col-md-5">
+                                        <div class='input-group date' id='datetimepickerstart'>
+                                            <input id="eventend" type='text' class="form-control" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <label for="eventend" class="col-xs-12 col-md-1">End</label>
+                                    <div class="col-xs-12 col-md-5">
+                                        <div class='input-group date' id='datetimepickerend'>
+                                            <input id="eventend" type='text' class="form-control" />
+                                            <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="description" class="col-xs-12">Description</label>
+                                    <div class="col-sm-12">
+                                        <textarea id="eventdescription" name="eventdescription" ng-model="eventEditModel.event.description" class="form-control"
+                                            rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="eventaddress" class="col-xs-12">Address</label>
+                                    <div class="col-xs-12">
+                                        <input id="eventaddress" type="text" name="eventaddress" class="form-control" ng-model="eventEditModel.event.address" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <label class="col-xs-12">Location</label>
+                                    <div class="col-xs-12">
+                                        <div id="editEventMap" style="height: 500px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-8">
+                                        <input id="eventpublic" type="checkbox" ng-model="eventEditModel.event.public" />
+                                        <label for="eventpublic">This event is public</label>
+                                    </div>
+                                    <div class="col-xs-6 col-md-2">
+                                        <button type="button" class="btn btn-block btn-danger" ng-click="closeEditEvent()">Discard</button>
+                                    </div>
+                                    <div class="col-xs-6 col-md-2">
+                                        <button type="button" class="btn btn-block btn-success" ng-click="saveEvent()">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="eventEditModel.status!=null">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <p class="alert {{eventEditModel.status.cls}}">{{eventEditModel.status.message}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 visible-lg"></div>
+    </div>
+</div>
+<div class="container-fluid view-container" ng-show="!stateFactory.user">
+    <div id="motivational">
+        <h1><i class="fa fa-user-plus fa-2x"></i> Error <span class="alert alert-warning">You aren't logged</span></h1>
+    </div>
+</div>

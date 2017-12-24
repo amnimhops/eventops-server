@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="evenTopsApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>evenTops - Find nearby events</title>
+
+    <link href="css/dark-bootstrap.css" rel="stylesheet">
+    <!--<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">-->
+    <!--<link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">-->
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- eonasdan timepicker -->
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css" />
+
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body style="background-color:red;margin:0px;padding:0px;">
+    <div id="_header" ui-view="header"></div>
+    <div id="_content" ui-view="content"></div>
+    <div ui-view="footer"></div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-resource.min.js"></script>
+    <script src="js/angular-ui-router.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/moment.js"></script>
+    <!-- eonasdan timepicker -->
+    <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
+        
+    <script src="app/app.js"></script>
+    <script src="app/controllers.js"></script>
+    <script src="app/services.js"></script>
+    <script src="app/geo.js"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaGDlfn59m4Lq5xnwXAAudwNF2NZ1JUJQ&callback=setupGoogleMaps"></script> 
+
+</body>
+
+</html>
