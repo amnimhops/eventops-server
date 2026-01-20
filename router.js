@@ -1,10 +1,10 @@
 var router = require('osprey').Router();
-var EventModel = require('./models/event.js');
-var UserModel = require('./models/user.js').model;
-var RequestModel = require('./models/request.js');
-var SuggestionModel = require('./models/suggestion.js');
-var CityModel = require('./models/city.js');
-var CategoryModel = require('./models/category.js');
+var EventModel = require('./persistence/event.js');
+var UserModel = require('./persistence/user.js').model;
+var RequestModel = require('./persistence/request.js');
+var SuggestionModel = require('./persistence/suggestion.js');
+var CityModel = require('./persistence/city.js');
+var CategoryModel = require('./persistence/category.js');
 
 var Codes = {
 	Unauthorized:{code:-1,msg:'Not authorized to do this'}
