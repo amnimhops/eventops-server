@@ -2,28 +2,16 @@
  * https://github.com/mulesoft/osprey
  * https://github.com/mulesoft/osprey/blob/master/examples/express/index.js
  */
-var mongoose = require('mongoose');
+var setupConnection = require('./persistence/connection.js');
+
 var osprey = require('osprey');
 var express = require('express');
 var join = require('path').join;
 var path = join(__dirname, 'api.raml');
 var router = require('./router.js');
-var validateUser = require('./models/user.js').validation;
+var validateUser = require('./persistence/user.js').validation;
 
-function setupConnection() {
-	var url = null;
 
-	try{
-		var services = JSON.parse(process.env.VCAP_SERVICES);
-		url = services['compose-for-mongodb'][0].credentials.uri;
-	}catch(e){
-		url = 'mongodb://localhost/eventops';
-	}
-
-	console.log('Connecting mondgodb');
-	mongoose.Promise = global.Promise;
-	return mongoose.connect(url, { useMongoClient: true })
-}
 
 
 setupConnection()

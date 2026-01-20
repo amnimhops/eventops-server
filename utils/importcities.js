@@ -1,51 +1,39 @@
-var mongoClient = require('mongodb').MongoClient;
-var fs = require('fs');
+const fs = require('fs');
+const City = require('../persistence/city');
 
-mongoClient.connect('mongodb://localhost/', function (err, client) {
-    var db = client.db('eventops');
-    var citiesCol = db.collection('cities');
+module.exports = function(){
+
+    console.log('Populating cities from cities.js');
     
-    
-    //citiesCol.createIndex({location:'2dsphere'});
-
-    var i = 0;
-    fs.readFile('cities.js',function(err,data){
-        console.log('Read. Importing')
-        var cities = JSON.parse(data.toString());
-        console.log('Imported');
-        //console.log('Evaluation complete');
-        var done = 0;
-        for(var i in cities){
-            cities[i].location = [parseFloat(cities[i].lng),parseFloat(cities[i].lat)];
-            delete cities['lat'];
-            delete cities['lng'];
-
-            (function(c){
-                citiesCol.insert(c,{w:0,j:false},function(err,data){
-                    done++;
-                    if(done%100==0) console.log('Done',done);
-                });
-            })(cities[i]);
+    return new Promise((resolve, reject) => {
+        fs.readFile('utils/cities.js', function(err, data) {
+            if (err) {
+                console.error('Error reading file:', err);
+                return;
+            }
             
-/*
-            if(i%100==0){
-                console.log(i,cities.length);
-            }*/
-        
-        }
-        client.close();
-        /*
-        cities.insert(city,{w:0,j:false})
-        .then((doc)=>{
-        })
-        .catch((err)=>{
-            console.log('WARN!=>',err);
-        });*/
-        i++;
+            console.log('City file read, parsing data...');
+            const cities = JSON.parse(data.toString());
+            console.log(cities.length, 'cities found, inserting into database, this may take a while...');
+            
+            let done = 0;
+            const totalCities = cities.length;
+            const cityDocs = [];
 
-        if(i%100==0){
-            console.log(i);
-        }
-    
+            cities.forEach((city) => {
+                const cityDoc = new City({
+                    name: city.name,
+                    country: city.country,
+                    location: [parseFloat(city.lng), parseFloat(city.lat)],
+                    description: city.description
+                });
+                cityDocs.push(cityDoc);
+            });
+
+            City
+                .insertMany(cityDocs, { ordered: false, writeConcern: { w: 0 } })
+                .then(() => resolve())
+                .catch(() => reject());
+        });
     });
-});
+};

@@ -368,7 +368,7 @@ angular.module('evenTopsApp')
     .controller('EventMapController', ['$scope', '$state', 'eventFactory', 'stateFactory', function ($scope, $state, eventFactory, stateFactory) {
         $scope.searchOptions = {
             visible: false,
-            distance: 1000
+            distance: 5000
         }
         $scope.userPosition = null;
         $scope.events = [];
@@ -379,7 +379,7 @@ angular.module('evenTopsApp')
         }
 
         $('#searchstart').datetimepicker().data("DateTimePicker").date(moment(new Date()));
-        $('#searchend').datetimepicker().data("DateTimePicker").date(moment(new Date()).add(1, 'days'));
+        $('#searchend').datetimepicker().data("DateTimePicker").date(moment(new Date()).add(30, 'days'));
 
         eventFactory.authenticate(null, null);
 
